@@ -1,7 +1,9 @@
 from flask import Flask, make_response
 from flask_migrate import Migrate
 
-from models import db
+from models import db, Workout
+from schemas import WorkoutSchema
+
 
 app = Flask(__name__)
 
@@ -12,7 +14,16 @@ db.init_app(app)
 migrate = Migrate(app, db)
 
 
-# Routes will be added here
+@app.route("/workouts", methods=["GET"])
+def get_workouts():
+    workouts = Workout.query.all()
+
+    schema = WorkoutSchema(many=True)
+
+    return make_response(
+        schema.dump(workouts),
+        200
+    )
 
 
 if __name__ == "__main__":
