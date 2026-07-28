@@ -50,3 +50,55 @@ class WorkoutExerciseSchema(Schema):
         allow_none=True,
         validate=validate.Range(min=1)
     )
+
+
+class WorkoutExerciseDetailSchema(Schema):
+    id = fields.Int(dump_only=True)
+
+    exercise_id = fields.Int()
+    reps = fields.Int()
+    sets = fields.Int()
+    duration_seconds = fields.Int(allow_none=True)
+
+    exercise = fields.Nested(
+        ExerciseSchema,
+        dump_only=True
+    )
+
+
+class WorkoutDetailSchema(Schema):
+    id = fields.Int(dump_only=True)
+    date = fields.Date()
+    duration_minutes = fields.Int()
+    notes = fields.Str(allow_none=True)
+
+    workout_exercises = fields.Nested(
+        WorkoutExerciseDetailSchema,
+        many=True,
+        dump_only=True
+    )
+    class ExerciseDetailSchema(Schema):
+
+        id = fields.Int(dump_only=True)
+        name = fields.Str()
+        category = fields.Str()
+        equipment_needed = fields.Bool()
+
+        workouts = fields.Nested(
+
+            WorkoutSchema,
+            many=True,
+            dump_only=True
+    )
+class ExerciseDetailSchema(Schema):
+    id = fields.Int(dump_only=True)
+
+    name = fields.Str()
+    category = fields.Str()
+    equipment_needed = fields.Bool()
+
+    workouts = fields.Nested(
+        WorkoutSchema,
+        many=True,
+        dump_only=True
+    ) 
