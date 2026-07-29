@@ -2,221 +2,26 @@
 
 ## Description
 
-This project is a Flask REST API for managing workouts and exercises. The API uses Flask-SQLAlchemy for database management, Flask-Migrate for database migrations, and Marshmallow for serialization, deserialization, and schema validation.
+A Flask REST API for managing workouts and exercises.
 
-The application allows users to:
+The API allows users to:
 
-* View all workouts
-* View a single workout and its associated exercises
-* Create workouts
-* Delete workouts
-* View all exercises
-* View a single exercise and its associated workouts
-* Create exercises
-* Delete exercises
-* Add exercises to workouts with reps, sets, and duration information
+- View, create, and delete workouts
+- View, create, and delete exercises
+- Add exercises to workouts
+- Store reps, sets, and duration for workout exercises
+
+The project uses Flask, SQLAlchemy, Flask-Migrate, Marshmallow, and SQLite.
 
 ## Technologies
 
-* Python 3.8
-* Flask 2.2.2
-* Flask-SQLAlchemy 3.0.3
-* Flask-Migrate 3.1.0
-* Marshmallow 3.20.1
-* SQLite
-* Pipenv
-
-## Installation
-
-Clone the repository and move into the project directory:
-
-```bash
-git clone <your-github-repository-url>
-cd summative_lab_m5
-```
-
-Install the project dependencies:
-
-```bash
-pipenv install
-```
-
-Activate the virtual environment:
-
-```bash
-pipenv shell
-```
-
-## Database Setup
-
-Move into the server directory:
-
-```bash
-cd server
-```
-
-Initialize the database migration system if necessary:
-
-```bash
-pipenv run flask --app app:app db init
-```
-
-Create a migration:
-
-```bash
-pipenv run flask --app app:app db migrate -m "create workout database tables"
-```
-
-Apply the migration:
-
-```bash
-pipenv run flask --app app:app db upgrade
-```
-
-## Seed the Database
-
-To create starter data for exercises, workouts, and workout exercises, run:
-
-```bash
-pipenv run python seed.py
-```
-
-The seed script clears existing data and creates new sample records.
-
-## Running the Application
-
-From the `server` directory, run:
-
-```bash
-pipenv run python app.py
-```
-
-The API will run at:
-
-```text
-http://127.0.0.1:5555
-```
-
-## API Endpoints
-
-### Workouts
-
-#### GET `/workouts`
-
-Returns all workouts.
-
-#### GET `/workouts/<id>`
-
-Returns one workout and its associated exercises.
-
-#### POST `/workouts`
-
-Creates a new workout.
-
-Example request:
-
-```json
-{
-  "date": "2026-07-28",
-  "duration_minutes": 45,
-  "notes": "Upper body workout"
-}
-```
-
-#### DELETE `/workouts/<id>`
-
-Deletes a workout and its associated workout-exercise records.
-
-### Exercises
-
-#### GET `/exercises`
-
-Returns all exercises.
-
-#### GET `/exercises/<id>`
-
-Returns one exercise and its associated workouts.
-
-#### POST `/exercises`
-
-Creates a new exercise.
-
-Example request:
-
-```json
-{
-  "name": "Deadlift",
-  "category": "Strength",
-  "equipment_needed": true
-}
-```
-
-#### DELETE `/exercises/<id>`
-
-Deletes an exercise and its associated workout-exercise records.
-
-### Workout Exercises
-
-#### POST `/workouts/<workout_id>/exercises/<exercise_id>/workout_exercises`
-
-Adds an exercise to a workout.
-
-Example request:
-
-```json
-{
-  "reps": 10,
-  "sets": 3,
-  "duration_seconds": 30
-}
-```
-
-## Validations and Constraints
-
-The application includes validation at multiple levels.
-
-### Table Constraints
-
-Examples include:
-
-* Required fields use `nullable=False`
-* Exercise names are unique
-* Workout and exercise foreign keys cannot be null
-* Reps and sets cannot be null
-
-### Model Validations
-
-The models validate:
-
-* Exercise names cannot be blank
-* Workout duration must be greater than zero
-* Reps must be greater than zero
-* Sets must be greater than zero
-* Exercise duration must be greater than zero when provided
-
-### Schema Validations
-
-Marshmallow validates:
-
-* Exercise name length
-* Exercise category length
-* Workout duration
-* Reps
-* Sets
-* Duration in seconds
-
-Invalid data is rejected before it is saved to the database.
-
-## Relationships
-
-The application uses the following relationships:
-
-* A Workout has many WorkoutExercises
-* An Exercise has many WorkoutExercises
-* A WorkoutExercise belongs to a Workout
-* A WorkoutExercise belongs to an Exercise
-* A Workout has many Exercises through WorkoutExercises
-* An Exercise has many Workouts through WorkoutExercises
+- Python 3.8
+- Flask 2.2.2
+- Flask-SQLAlchemy 3.0.3
+- Flask-Migrate 3.1.0
+- Marshmallow 3.20.1
+- SQLite
+- Pipenv
 
 ## Project Structure
 
@@ -231,9 +36,168 @@ summative_lab_m5/
     ├── models.py
     ├── schemas.py
     ├── seed.py
-    └── migrations/
-```
+    ├── migrations/
+    └── instance/
+        └── app.db
+Main Files
+app.py - Flask application and API routes
+models.py - Database models, relationships, constraints, and model validations
+schemas.py - Marshmallow schemas and schema validations
+seed.py - Creates sample database records
+migrations/ - Database migration files
+instance/app.db - SQLite database
+Installation
 
-## Author
+Clone the repository:
+
+git clone <your-github-repository-url>
+cd summative_lab_m5
+
+Install dependencies:
+
+pipenv install
+
+Activate the virtual environment:
+
+pipenv shell
+Database Setup
+
+Move into the server directory:
+
+cd server
+
+Initialize migrations if needed:
+
+pipenv run flask --app app:app db init
+
+Create a migration:
+
+pipenv run flask --app app:app db migrate -m "create database tables"
+
+Apply the migration:
+
+pipenv run flask --app app:app db upgrade
+Seed the Database
+
+Run:
+
+pipenv run python seed.py
+
+The seed file clears existing data and creates sample records for:
+
+Exercises
+Workouts
+WorkoutExercises
+Run the Application
+
+From the server directory:
+
+pipenv run python app.py
+
+The API runs at:
+
+http://127.0.0.1:5555
+
+To view all registered routes:
+
+pipenv run flask --app app:app routes
+API Endpoints
+Workouts
+Method	Endpoint	Description
+GET	/workouts	List all workouts
+GET	/workouts/<id>	Show one workout and its exercises
+POST	/workouts	Create a workout
+DELETE	/workouts/<id>	Delete a workout
+Exercises
+Method	Endpoint	Description
+GET	/exercises	List all exercises
+GET	/exercises/<id>	Show one exercise and its workouts
+POST	/exercises	Create an exercise
+DELETE	/exercises/<id>	Delete an exercise
+Workout Exercises
+Method	Endpoint	Description
+POST	/workouts/<workout_id>/exercises/<exercise_id>/workout_exercises	Add an exercise to a workout
+
+Example request:
+
+{
+  "reps": 10,
+  "sets": 3,
+  "duration_seconds": 30
+}
+Models
+Exercise
+id
+name
+category
+equipment_needed
+Workout
+id
+date
+duration_minutes
+notes
+WorkoutExercise
+id
+workout_id
+exercise_id
+reps
+sets
+duration_seconds
+Relationships
+Workout has many WorkoutExercises
+Exercise has many WorkoutExercises
+WorkoutExercise belongs to Workout
+WorkoutExercise belongs to Exercise
+Workout has many Exercises through WorkoutExercises
+Exercise has many Workouts through WorkoutExercises
+Validations
+Table Constraints
+
+The database uses constraints including:
+
+Primary keys
+Required fields using nullable=False
+Unique exercise names
+Foreign keys
+Required reps and sets
+Model Validations
+
+The models validate that:
+
+Exercise names cannot be blank
+Workout duration must be greater than 0
+Reps must be greater than 0
+Sets must be greater than 0
+Duration seconds must be greater than 0 when provided
+Schema Validations
+
+Marshmallow validates:
+
+Exercise name length
+Exercise category length
+Workout duration
+Reps
+Sets
+Duration seconds
+Serialization
+
+Marshmallow is used to:
+
+Serialize SQLAlchemy objects into JSON responses
+Deserialize JSON requests into validated Python data
+Validate incoming API data
+Git Workflow
+
+Git was used throughout development with meaningful commits for major features such as:
+
+Models
+Relationships
+Constraints and validations
+Migrations
+Seed data
+Schemas
+API endpoints
+README documentation
+Author
 
 Created as a Flask SQLAlchemy backend summative project.
